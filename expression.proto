@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package proto_expr;
+
+option go_package = "github.com/accretional/proto-expr";
+
+message Data {
+  string type = 1;
+  oneof encoding {
+    string text = 2;
+    bytes binary = 3;
+  }
+}
+
+// These are S-Expressions / AST for a basic LISP and interpreter
+// Interpret Cells as dispatch, otherwise merely flatten the expression and keep going
+// This structure allows for Dispatch "pipelining" eg f1 (f2 (f3 a))
+// But because of its tree-like structure it also gives us higher order functions eg ((f1 f2) f3) a 
+message Expression {
+  message Cell {
+    Expression lhs = 1;
+    Expression rhs = 2;
+  }
+  oneof content {
+    string str = 1;
+    string uri = 2;
+    Data data = 3;
+    Cell cell = 4;
+  }
+}
+
+// from proto-type:
+// In addition to deferred computation this gives us the ability to represent the Builder Pattern
+// As long as method's input and output_types are the same, it means we can essentially convert Dispatch[] / stream Dispatch into x.MethodA().MethodB()
+// When those types are FileDescriptorProto, it essentially allows us to have a type system closed under f: FileDescriptorProto x f -> FileDescriptorProto
+// So, Dispatch(Fn FileDescriptorProto -> X) is sufficient for any transformation across types, or evaluating to any other expression.
+// from proto-expr:
+// don't encode MethodDescriptorProto, just its uri
+message DispatchRPC {
+  string uri = 1;
+  // Validate that the input type of uri is the same as request's type
+  Data request = 2;
+}
+
