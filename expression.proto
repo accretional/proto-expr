@@ -29,7 +29,7 @@ message Expression {
   }
 }
 
-message ExpressionDescriptorProto {
+message ExpressionDescriptor {
   string name = 1;
   Expression expression = 2;
 }
@@ -37,13 +37,48 @@ message ExpressionDescriptorProto {
 // from proto-type:
 // In addition to deferred computation this gives us the ability to represent the Builder Pattern
 // As long as method's input and output_types are the same, it means we can essentially convert Dispatch[] / stream Dispatch into x.MethodA().MethodB()
-// When those types are FileDescriptorProto, it essentially allows us to have a type system closed under f: FileDescriptorProto x f -> FileDescriptorProto
-// So, Dispatch(Fn FileDescriptorProto -> X) is sufficient for any transformation across types, or evaluating to any other expression.
+// When those types are FileDescriptor, it essentially allows us to have a type system closed under f: FileDescriptor x f -> FileDescriptor
+// So, Dispatch(Fn FileDescriptor -> X) is sufficient for any transformation across types, or evaluating to any other expression.
 // from proto-expr:
-// don't encode MethodDescriptorProto, just its uri
-message DispatchRPC {
+// don't encode MethodDescriptor, just its uri
+message DispatchDescriptor {
   string uri = 1;
   // Validate that the input type of uri is the same as request's type
   Data request = 2;
+}
+
+message ImportDescriptor {
+  string name = 1;
+  string uri = 2;
+}
+
+message VariableDescriptor {
+  string name = 1;
+  Data data = 2;
+}
+
+repeated StatementDescriptor {
+  oneof kind {
+    ImportDescriptor imports = 1;
+    VariableDescriptor const_var = 2;
+    VariableDescriptor mutable_var = 3;
+    ExpressionDescriptor expression = 4;
+    DispatchDescriptor dispath = 5;
+  }
+}
+
+message ScriptDescriptor {
+  message Config {
+    int32 max_output_buffer_bytes = 1;
+  }
+  string stdin_uri = 1;
+  string stdout_uri = 2;
+  string stderr_uri = 3;
+  repeated StatementDescriptor statements = 4;
+  Config config = 5;
+}
+
+service Protosh {
+  rpc Run(ScriptDescriptor) returns(Data);
 }
 
