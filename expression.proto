@@ -29,6 +29,11 @@ message Expression {
   }
 }
 
+message ExpressionDescriptorProto {
+  string name = 1;
+  Expression expression = 2;
+}
+
 // from proto-type:
 // In addition to deferred computation this gives us the ability to represent the Builder Pattern
 // As long as method's input and output_types are the same, it means we can essentially convert Dispatch[] / stream Dispatch into x.MethodA().MethodB()
