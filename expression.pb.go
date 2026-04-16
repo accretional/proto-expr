@@ -229,36 +229,28 @@ func (*Expression_Data) isExpression_Content() {}
 
 func (*Expression_Cell_) isExpression_Content() {}
 
-// from proto-type:
-// In addition to deferred computation this gives us the ability to represent the Builder Pattern
-// As long as method's input and output_types are the same, it means we can essentially convert Dispatch[] / stream Dispatch into x.MethodA().MethodB()
-// When those types are FileDescriptorProto, it essentially allows us to have a type system closed under f: FileDescriptorProto x f -> FileDescriptorProto
-// So, Dispatch(Fn FileDescriptorProto -> X) is sufficient for any transformation across types, or evaluating to any other expression.
-// from proto-expr:
-// don't encode MethodDescriptorProto, just its uri
-type DispatchRPC struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	Uri   string                 `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
-	// Validate that the input type of uri is the same as request's type
-	Request       *Data `protobuf:"bytes,2,opt,name=request,proto3" json:"request,omitempty"`
+type ExpressionDescriptor struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Expression    *Expression            `protobuf:"bytes,2,opt,name=expression,proto3" json:"expression,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DispatchRPC) Reset() {
-	*x = DispatchRPC{}
+func (x *ExpressionDescriptor) Reset() {
+	*x = ExpressionDescriptor{}
 	mi := &file_expression_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DispatchRPC) String() string {
+func (x *ExpressionDescriptor) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DispatchRPC) ProtoMessage() {}
+func (*ExpressionDescriptor) ProtoMessage() {}
 
-func (x *DispatchRPC) ProtoReflect() protoreflect.Message {
+func (x *ExpressionDescriptor) ProtoReflect() protoreflect.Message {
 	mi := &file_expression_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -270,21 +262,437 @@ func (x *DispatchRPC) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DispatchRPC.ProtoReflect.Descriptor instead.
-func (*DispatchRPC) Descriptor() ([]byte, []int) {
+// Deprecated: Use ExpressionDescriptor.ProtoReflect.Descriptor instead.
+func (*ExpressionDescriptor) Descriptor() ([]byte, []int) {
 	return file_expression_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *DispatchRPC) GetUri() string {
+func (x *ExpressionDescriptor) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ExpressionDescriptor) GetExpression() *Expression {
+	if x != nil {
+		return x.Expression
+	}
+	return nil
+}
+
+// from proto-type:
+// In addition to deferred computation this gives us the ability to represent the Builder Pattern
+// As long as method's input and output_types are the same, it means we can essentially convert Dispatch[] / stream Dispatch into x.MethodA().MethodB()
+// When those types are FileDescriptor, it essentially allows us to have a type system closed under f: FileDescriptor x f -> FileDescriptor
+// So, Dispatch(Fn FileDescriptor -> X) is sufficient for any transformation across types, or evaluating to any other expression.
+// from proto-expr:
+// don't encode MethodDescriptor, just its uri
+type DispatchDescriptor struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Uri   string                 `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
+	// Validate that the input type of uri is the same as request's type
+	Request *Data `protobuf:"bytes,2,opt,name=request,proto3" json:"request,omitempty"`
+	// Types that are valid to be assigned to Dest:
+	//
+	//	*DispatchDescriptor_Name
+	//	*DispatchDescriptor_Path
+	Dest          isDispatchDescriptor_Dest `protobuf_oneof:"dest"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DispatchDescriptor) Reset() {
+	*x = DispatchDescriptor{}
+	mi := &file_expression_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DispatchDescriptor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DispatchDescriptor) ProtoMessage() {}
+
+func (x *DispatchDescriptor) ProtoReflect() protoreflect.Message {
+	mi := &file_expression_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DispatchDescriptor.ProtoReflect.Descriptor instead.
+func (*DispatchDescriptor) Descriptor() ([]byte, []int) {
+	return file_expression_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DispatchDescriptor) GetUri() string {
 	if x != nil {
 		return x.Uri
 	}
 	return ""
 }
 
-func (x *DispatchRPC) GetRequest() *Data {
+func (x *DispatchDescriptor) GetRequest() *Data {
 	if x != nil {
 		return x.Request
+	}
+	return nil
+}
+
+func (x *DispatchDescriptor) GetDest() isDispatchDescriptor_Dest {
+	if x != nil {
+		return x.Dest
+	}
+	return nil
+}
+
+func (x *DispatchDescriptor) GetName() string {
+	if x != nil {
+		if x, ok := x.Dest.(*DispatchDescriptor_Name); ok {
+			return x.Name
+		}
+	}
+	return ""
+}
+
+func (x *DispatchDescriptor) GetPath() string {
+	if x != nil {
+		if x, ok := x.Dest.(*DispatchDescriptor_Path); ok {
+			return x.Path
+		}
+	}
+	return ""
+}
+
+type isDispatchDescriptor_Dest interface {
+	isDispatchDescriptor_Dest()
+}
+
+type DispatchDescriptor_Name struct {
+	Name string `protobuf:"bytes,3,opt,name=name,proto3,oneof"`
+}
+
+type DispatchDescriptor_Path struct {
+	Path string `protobuf:"bytes,4,opt,name=path,proto3,oneof"`
+}
+
+func (*DispatchDescriptor_Name) isDispatchDescriptor_Dest() {}
+
+func (*DispatchDescriptor_Path) isDispatchDescriptor_Dest() {}
+
+type ImportDescriptor struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Uri           string                 `protobuf:"bytes,2,opt,name=uri,proto3" json:"uri,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImportDescriptor) Reset() {
+	*x = ImportDescriptor{}
+	mi := &file_expression_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImportDescriptor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImportDescriptor) ProtoMessage() {}
+
+func (x *ImportDescriptor) ProtoReflect() protoreflect.Message {
+	mi := &file_expression_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ImportDescriptor.ProtoReflect.Descriptor instead.
+func (*ImportDescriptor) Descriptor() ([]byte, []int) {
+	return file_expression_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ImportDescriptor) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ImportDescriptor) GetUri() string {
+	if x != nil {
+		return x.Uri
+	}
+	return ""
+}
+
+type VariableDescriptor struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Data          *Data                  `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VariableDescriptor) Reset() {
+	*x = VariableDescriptor{}
+	mi := &file_expression_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VariableDescriptor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VariableDescriptor) ProtoMessage() {}
+
+func (x *VariableDescriptor) ProtoReflect() protoreflect.Message {
+	mi := &file_expression_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VariableDescriptor.ProtoReflect.Descriptor instead.
+func (*VariableDescriptor) Descriptor() ([]byte, []int) {
+	return file_expression_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *VariableDescriptor) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *VariableDescriptor) GetData() *Data {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+type StatementDescriptor struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Kind:
+	//
+	//	*StatementDescriptor_Imports
+	//	*StatementDescriptor_ConstVar
+	//	*StatementDescriptor_MutableVar
+	//	*StatementDescriptor_Expression
+	//	*StatementDescriptor_Dispatch
+	Kind          isStatementDescriptor_Kind `protobuf_oneof:"kind"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StatementDescriptor) Reset() {
+	*x = StatementDescriptor{}
+	mi := &file_expression_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StatementDescriptor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StatementDescriptor) ProtoMessage() {}
+
+func (x *StatementDescriptor) ProtoReflect() protoreflect.Message {
+	mi := &file_expression_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StatementDescriptor.ProtoReflect.Descriptor instead.
+func (*StatementDescriptor) Descriptor() ([]byte, []int) {
+	return file_expression_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *StatementDescriptor) GetKind() isStatementDescriptor_Kind {
+	if x != nil {
+		return x.Kind
+	}
+	return nil
+}
+
+func (x *StatementDescriptor) GetImports() *ImportDescriptor {
+	if x != nil {
+		if x, ok := x.Kind.(*StatementDescriptor_Imports); ok {
+			return x.Imports
+		}
+	}
+	return nil
+}
+
+func (x *StatementDescriptor) GetConstVar() *VariableDescriptor {
+	if x != nil {
+		if x, ok := x.Kind.(*StatementDescriptor_ConstVar); ok {
+			return x.ConstVar
+		}
+	}
+	return nil
+}
+
+func (x *StatementDescriptor) GetMutableVar() *VariableDescriptor {
+	if x != nil {
+		if x, ok := x.Kind.(*StatementDescriptor_MutableVar); ok {
+			return x.MutableVar
+		}
+	}
+	return nil
+}
+
+func (x *StatementDescriptor) GetExpression() *ExpressionDescriptor {
+	if x != nil {
+		if x, ok := x.Kind.(*StatementDescriptor_Expression); ok {
+			return x.Expression
+		}
+	}
+	return nil
+}
+
+func (x *StatementDescriptor) GetDispatch() *DispatchDescriptor {
+	if x != nil {
+		if x, ok := x.Kind.(*StatementDescriptor_Dispatch); ok {
+			return x.Dispatch
+		}
+	}
+	return nil
+}
+
+type isStatementDescriptor_Kind interface {
+	isStatementDescriptor_Kind()
+}
+
+type StatementDescriptor_Imports struct {
+	Imports *ImportDescriptor `protobuf:"bytes,1,opt,name=imports,proto3,oneof"`
+}
+
+type StatementDescriptor_ConstVar struct {
+	ConstVar *VariableDescriptor `protobuf:"bytes,2,opt,name=const_var,json=constVar,proto3,oneof"`
+}
+
+type StatementDescriptor_MutableVar struct {
+	MutableVar *VariableDescriptor `protobuf:"bytes,3,opt,name=mutable_var,json=mutableVar,proto3,oneof"`
+}
+
+type StatementDescriptor_Expression struct {
+	Expression *ExpressionDescriptor `protobuf:"bytes,4,opt,name=expression,proto3,oneof"`
+}
+
+type StatementDescriptor_Dispatch struct {
+	Dispatch *DispatchDescriptor `protobuf:"bytes,5,opt,name=dispatch,proto3,oneof"`
+}
+
+func (*StatementDescriptor_Imports) isStatementDescriptor_Kind() {}
+
+func (*StatementDescriptor_ConstVar) isStatementDescriptor_Kind() {}
+
+func (*StatementDescriptor_MutableVar) isStatementDescriptor_Kind() {}
+
+func (*StatementDescriptor_Expression) isStatementDescriptor_Kind() {}
+
+func (*StatementDescriptor_Dispatch) isStatementDescriptor_Kind() {}
+
+type ScriptDescriptor struct {
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	StdinUri      string                   `protobuf:"bytes,1,opt,name=stdin_uri,json=stdinUri,proto3" json:"stdin_uri,omitempty"`
+	StdoutUri     string                   `protobuf:"bytes,2,opt,name=stdout_uri,json=stdoutUri,proto3" json:"stdout_uri,omitempty"`
+	StderrUri     string                   `protobuf:"bytes,3,opt,name=stderr_uri,json=stderrUri,proto3" json:"stderr_uri,omitempty"`
+	Statements    []*StatementDescriptor   `protobuf:"bytes,4,rep,name=statements,proto3" json:"statements,omitempty"`
+	Config        *ScriptDescriptor_Config `protobuf:"bytes,5,opt,name=config,proto3" json:"config,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ScriptDescriptor) Reset() {
+	*x = ScriptDescriptor{}
+	mi := &file_expression_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ScriptDescriptor) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ScriptDescriptor) ProtoMessage() {}
+
+func (x *ScriptDescriptor) ProtoReflect() protoreflect.Message {
+	mi := &file_expression_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ScriptDescriptor.ProtoReflect.Descriptor instead.
+func (*ScriptDescriptor) Descriptor() ([]byte, []int) {
+	return file_expression_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ScriptDescriptor) GetStdinUri() string {
+	if x != nil {
+		return x.StdinUri
+	}
+	return ""
+}
+
+func (x *ScriptDescriptor) GetStdoutUri() string {
+	if x != nil {
+		return x.StdoutUri
+	}
+	return ""
+}
+
+func (x *ScriptDescriptor) GetStderrUri() string {
+	if x != nil {
+		return x.StderrUri
+	}
+	return ""
+}
+
+func (x *ScriptDescriptor) GetStatements() []*StatementDescriptor {
+	if x != nil {
+		return x.Statements
+	}
+	return nil
+}
+
+func (x *ScriptDescriptor) GetConfig() *ScriptDescriptor_Config {
+	if x != nil {
+		return x.Config
 	}
 	return nil
 }
@@ -299,7 +707,7 @@ type Expression_Cell struct {
 
 func (x *Expression_Cell) Reset() {
 	*x = Expression_Cell{}
-	mi := &file_expression_proto_msgTypes[3]
+	mi := &file_expression_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -311,7 +719,7 @@ func (x *Expression_Cell) String() string {
 func (*Expression_Cell) ProtoMessage() {}
 
 func (x *Expression_Cell) ProtoReflect() protoreflect.Message {
-	mi := &file_expression_proto_msgTypes[3]
+	mi := &file_expression_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -341,6 +749,50 @@ func (x *Expression_Cell) GetRhs() *Expression {
 	return nil
 }
 
+type ScriptDescriptor_Config struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	MaxOutputBufferBytes int32                  `protobuf:"varint,1,opt,name=max_output_buffer_bytes,json=maxOutputBufferBytes,proto3" json:"max_output_buffer_bytes,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *ScriptDescriptor_Config) Reset() {
+	*x = ScriptDescriptor_Config{}
+	mi := &file_expression_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ScriptDescriptor_Config) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ScriptDescriptor_Config) ProtoMessage() {}
+
+func (x *ScriptDescriptor_Config) ProtoReflect() protoreflect.Message {
+	mi := &file_expression_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ScriptDescriptor_Config.ProtoReflect.Descriptor instead.
+func (*ScriptDescriptor_Config) Descriptor() ([]byte, []int) {
+	return file_expression_proto_rawDescGZIP(), []int{7, 0}
+}
+
+func (x *ScriptDescriptor_Config) GetMaxOutputBufferBytes() int32 {
+	if x != nil {
+		return x.MaxOutputBufferBytes
+	}
+	return 0
+}
+
 var File_expression_proto protoreflect.FileDescriptor
 
 const file_expression_proto_rawDesc = "" +
@@ -362,10 +814,48 @@ const file_expression_proto_rawDesc = "" +
 	"\x04Cell\x12(\n" +
 	"\x03lhs\x18\x01 \x01(\v2\x16.proto_expr.ExpressionR\x03lhs\x12(\n" +
 	"\x03rhs\x18\x02 \x01(\v2\x16.proto_expr.ExpressionR\x03rhsB\t\n" +
-	"\acontent\"K\n" +
-	"\vDispatchRPC\x12\x10\n" +
+	"\acontent\"b\n" +
+	"\x14ExpressionDescriptor\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x126\n" +
+	"\n" +
+	"expression\x18\x02 \x01(\v2\x16.proto_expr.ExpressionR\n" +
+	"expression\"\x86\x01\n" +
+	"\x12DispatchDescriptor\x12\x10\n" +
 	"\x03uri\x18\x01 \x01(\tR\x03uri\x12*\n" +
-	"\arequest\x18\x02 \x01(\v2\x10.proto_expr.DataR\arequestB#Z!github.com/accretional/proto-exprb\x06proto3"
+	"\arequest\x18\x02 \x01(\v2\x10.proto_expr.DataR\arequest\x12\x14\n" +
+	"\x04name\x18\x03 \x01(\tH\x00R\x04name\x12\x14\n" +
+	"\x04path\x18\x04 \x01(\tH\x00R\x04pathB\x06\n" +
+	"\x04dest\"8\n" +
+	"\x10ImportDescriptor\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
+	"\x03uri\x18\x02 \x01(\tR\x03uri\"N\n" +
+	"\x12VariableDescriptor\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12$\n" +
+	"\x04data\x18\x02 \x01(\v2\x10.proto_expr.DataR\x04data\"\xdb\x02\n" +
+	"\x13StatementDescriptor\x128\n" +
+	"\aimports\x18\x01 \x01(\v2\x1c.proto_expr.ImportDescriptorH\x00R\aimports\x12=\n" +
+	"\tconst_var\x18\x02 \x01(\v2\x1e.proto_expr.VariableDescriptorH\x00R\bconstVar\x12A\n" +
+	"\vmutable_var\x18\x03 \x01(\v2\x1e.proto_expr.VariableDescriptorH\x00R\n" +
+	"mutableVar\x12B\n" +
+	"\n" +
+	"expression\x18\x04 \x01(\v2 .proto_expr.ExpressionDescriptorH\x00R\n" +
+	"expression\x12<\n" +
+	"\bdispatch\x18\x05 \x01(\v2\x1e.proto_expr.DispatchDescriptorH\x00R\bdispatchB\x06\n" +
+	"\x04kind\"\xac\x02\n" +
+	"\x10ScriptDescriptor\x12\x1b\n" +
+	"\tstdin_uri\x18\x01 \x01(\tR\bstdinUri\x12\x1d\n" +
+	"\n" +
+	"stdout_uri\x18\x02 \x01(\tR\tstdoutUri\x12\x1d\n" +
+	"\n" +
+	"stderr_uri\x18\x03 \x01(\tR\tstderrUri\x12?\n" +
+	"\n" +
+	"statements\x18\x04 \x03(\v2\x1f.proto_expr.StatementDescriptorR\n" +
+	"statements\x12;\n" +
+	"\x06config\x18\x05 \x01(\v2#.proto_expr.ScriptDescriptor.ConfigR\x06config\x1a?\n" +
+	"\x06Config\x125\n" +
+	"\x17max_output_buffer_bytes\x18\x01 \x01(\x05R\x14maxOutputBufferBytes2@\n" +
+	"\aProtosh\x125\n" +
+	"\x03Run\x12\x1c.proto_expr.ScriptDescriptor\x1a\x10.proto_expr.DataB#Z!github.com/accretional/proto-exprb\x06proto3"
 
 var (
 	file_expression_proto_rawDescOnce sync.Once
@@ -379,24 +869,41 @@ func file_expression_proto_rawDescGZIP() []byte {
 	return file_expression_proto_rawDescData
 }
 
-var file_expression_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_expression_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_expression_proto_goTypes = []any{
-	(*Data)(nil),            // 0: proto_expr.Data
-	(*Expression)(nil),      // 1: proto_expr.Expression
-	(*DispatchRPC)(nil),     // 2: proto_expr.DispatchRPC
-	(*Expression_Cell)(nil), // 3: proto_expr.Expression.Cell
+	(*Data)(nil),                    // 0: proto_expr.Data
+	(*Expression)(nil),              // 1: proto_expr.Expression
+	(*ExpressionDescriptor)(nil),    // 2: proto_expr.ExpressionDescriptor
+	(*DispatchDescriptor)(nil),      // 3: proto_expr.DispatchDescriptor
+	(*ImportDescriptor)(nil),        // 4: proto_expr.ImportDescriptor
+	(*VariableDescriptor)(nil),      // 5: proto_expr.VariableDescriptor
+	(*StatementDescriptor)(nil),     // 6: proto_expr.StatementDescriptor
+	(*ScriptDescriptor)(nil),        // 7: proto_expr.ScriptDescriptor
+	(*Expression_Cell)(nil),         // 8: proto_expr.Expression.Cell
+	(*ScriptDescriptor_Config)(nil), // 9: proto_expr.ScriptDescriptor.Config
 }
 var file_expression_proto_depIdxs = []int32{
-	0, // 0: proto_expr.Expression.data:type_name -> proto_expr.Data
-	3, // 1: proto_expr.Expression.cell:type_name -> proto_expr.Expression.Cell
-	0, // 2: proto_expr.DispatchRPC.request:type_name -> proto_expr.Data
-	1, // 3: proto_expr.Expression.Cell.lhs:type_name -> proto_expr.Expression
-	1, // 4: proto_expr.Expression.Cell.rhs:type_name -> proto_expr.Expression
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	0,  // 0: proto_expr.Expression.data:type_name -> proto_expr.Data
+	8,  // 1: proto_expr.Expression.cell:type_name -> proto_expr.Expression.Cell
+	1,  // 2: proto_expr.ExpressionDescriptor.expression:type_name -> proto_expr.Expression
+	0,  // 3: proto_expr.DispatchDescriptor.request:type_name -> proto_expr.Data
+	0,  // 4: proto_expr.VariableDescriptor.data:type_name -> proto_expr.Data
+	4,  // 5: proto_expr.StatementDescriptor.imports:type_name -> proto_expr.ImportDescriptor
+	5,  // 6: proto_expr.StatementDescriptor.const_var:type_name -> proto_expr.VariableDescriptor
+	5,  // 7: proto_expr.StatementDescriptor.mutable_var:type_name -> proto_expr.VariableDescriptor
+	2,  // 8: proto_expr.StatementDescriptor.expression:type_name -> proto_expr.ExpressionDescriptor
+	3,  // 9: proto_expr.StatementDescriptor.dispatch:type_name -> proto_expr.DispatchDescriptor
+	6,  // 10: proto_expr.ScriptDescriptor.statements:type_name -> proto_expr.StatementDescriptor
+	9,  // 11: proto_expr.ScriptDescriptor.config:type_name -> proto_expr.ScriptDescriptor.Config
+	1,  // 12: proto_expr.Expression.Cell.lhs:type_name -> proto_expr.Expression
+	1,  // 13: proto_expr.Expression.Cell.rhs:type_name -> proto_expr.Expression
+	7,  // 14: proto_expr.Protosh.Run:input_type -> proto_expr.ScriptDescriptor
+	0,  // 15: proto_expr.Protosh.Run:output_type -> proto_expr.Data
+	15, // [15:16] is the sub-list for method output_type
+	14, // [14:15] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_expression_proto_init() }
@@ -414,15 +921,26 @@ func file_expression_proto_init() {
 		(*Expression_Data)(nil),
 		(*Expression_Cell_)(nil),
 	}
+	file_expression_proto_msgTypes[3].OneofWrappers = []any{
+		(*DispatchDescriptor_Name)(nil),
+		(*DispatchDescriptor_Path)(nil),
+	}
+	file_expression_proto_msgTypes[6].OneofWrappers = []any{
+		(*StatementDescriptor_Imports)(nil),
+		(*StatementDescriptor_ConstVar)(nil),
+		(*StatementDescriptor_MutableVar)(nil),
+		(*StatementDescriptor_Expression)(nil),
+		(*StatementDescriptor_Dispatch)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_expression_proto_rawDesc), len(file_expression_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   10,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_expression_proto_goTypes,
 		DependencyIndexes: file_expression_proto_depIdxs,
