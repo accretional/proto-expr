@@ -63,7 +63,7 @@ message StatementDescriptor {
     VariableDescriptor const_var = 2;
     VariableDescriptor mutable_var = 3;
     ExpressionDescriptor expression = 4;
-    DispatchDescriptor dispath = 5;
+    DispatchDescriptor dispatch = 5;
   }
 }
 
