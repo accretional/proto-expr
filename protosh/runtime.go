@@ -150,7 +150,11 @@ func (r *Runtime) execDispatch(ctx context.Context, d *pb.DispatchDescriptor, re
 
 // resolveRequest applies the "text is a register reference" rule:
 // if req.encoding is text and the text names an existing register,
-// the register's value replaces req. Otherwise req is returned as-is.
+// the register's encoding replaces req's encoding. The caller-supplied
+// req.type is preserved when non-empty — this lets dispatch requests
+// pass small parameter strings in Data.type without them being
+// clobbered by the substituted register's type. If req.type is empty,
+// the register's type is used.
 func resolveRequest(req *pb.Data, regs map[string]*pb.Data) *pb.Data {
 	if req == nil {
 		return &pb.Data{}
@@ -159,10 +163,15 @@ func resolveRequest(req *pb.Data, regs map[string]*pb.Data) *pb.Data {
 	if !ok {
 		return req
 	}
-	if reg, present := regs[t.Text]; present {
-		return reg
+	reg, present := regs[t.Text]
+	if !present {
+		return req
 	}
-	return req
+	out := &pb.Data{Type: reg.GetType(), Encoding: reg.GetEncoding()}
+	if req.GetType() != "" {
+		out.Type = req.GetType()
+	}
+	return out
 }
 
 // readURI reads a URI into a Data. Supported schemes: file (default
