@@ -45,6 +45,10 @@ message DispatchDescriptor {
   string uri = 1;
   // Validate that the input type of uri is the same as request's type
   Data request = 2;
+  oneof dest {
+    string name = 3;
+    string path = 4;
+  }
 }
 
 message ImportDescriptor {
