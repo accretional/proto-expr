@@ -57,7 +57,7 @@ message VariableDescriptor {
   Data data = 2;
 }
 
-repeated StatementDescriptor {
+message StatementDescriptor {
   oneof kind {
     ImportDescriptor imports = 1;
     VariableDescriptor const_var = 2;
